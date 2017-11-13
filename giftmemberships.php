@@ -132,6 +132,11 @@ function giftmemberships_civicrm_postProcess($formName, &$form) {
         }
     }
     if ($formName == "CRM_Contribute_Form_Contribution_Confirm") {
+        static $isDone = NULL;
+        if ($isDone) {
+          return;
+        }
+        $isDone = 1;
         $submitValues = $form->_params;
         $contributionId = $form->_contributionID;
         $giverId = $form->_contactID;
@@ -241,7 +246,6 @@ function giftmemberships_civicrm_validateForm($formName, &$fields, &$files, &$fo
                 $dao = CRM_Core_DAO::executeQuery($sql);
                 if ($dao->fetch()) {
                     $membership_id = $dao->membership_id;
-                    $membership_type = $dao->membership_type;
                     if ($membership_id != null) {
                         // If Membership ID is not NULL then it has already been used, return error.
                         $form->setElementError($priceName, null);
